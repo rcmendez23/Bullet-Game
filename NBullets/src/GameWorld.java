@@ -39,7 +39,7 @@ public class GameWorld extends World{
   // space bar press: release bullet
   public GameWorld onKeyEvent(String key) {
     if(key == " ") {
-      return spawnBullet();
+      return this.spawnBullet();
     }
     else {
       return this;
