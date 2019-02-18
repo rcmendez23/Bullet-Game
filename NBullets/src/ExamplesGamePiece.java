@@ -25,10 +25,34 @@ public class ExamplesGamePiece {
         t.checkExpect(new MyPosn(501,20).isOffscreen(500,300), true) &&
         t.checkExpect(new MyPosn(20, 301).isOffscreen(500, 300), true) &&
         t.checkExpect(new MyPosn(0,0).distance(new MyPosn(1,1)), Math.sqrt(2)) &&
-        t.checkInexact(new MyPosn(30, 40).distance(new MyPosn(20,50)), 14.142, 0.01);
-          
+        t.checkInexact(new MyPosn(30, 40).distance(new MyPosn(20,50)), 14.142, 0.01);       
   }
   
+  boolean testGamePosns(Tester t) {
+  	return t.checkExpect(this.ship1.move(), new Ship(new MyPosn(4,0), new MyPosn(4,0))) &&
+  			t.checkExpect(this.ship2.move(), new Ship(new MyPosn(496,0), new MyPosn(-4,0))) &&
+  			t.checkExpect(this.bullet1.move(), new Bullet(new MyPosn(250,308), new MyPosn(0,8), 2, 0)) &&
+  			t.checkExpect(this.bullet2.move(), new Bullet(new MyPosn(250, 11), new MyPosn(0,8), 4, 0)) &&
+  			t.checkExpect(this.bullet3.move(), new Bullet(new MyPosn(8,10), new MyPosn(0,8), 8, 0)) &&
+  			t.checkExpect(this.bullet4.move(), new Bullet(new MyPosn(257,416), new MyPosn(2, 16), 16,0)) &&
+  			t.checkExpect(this.ship1.isOffscreen(), false) &&
+  			t.checkExpect(new Bullet(new MyPosn(-1,30), new MyPosn(0,0), 2, 0).isOffscreen(), true) &&
+  			t.checkExpect(new Ship(new MyPosn(30, -1), new MyPosn(0,0)), true) &&
+  			t.checkExpect(new Ship(new MyPosn(501,20), new MyPosn(0,0)), true) &&
+  			t.checkExpect(new Ship(new MyPosn(20, 301), new MyPosn(0,0)), true) &&
+  			t.checkExpect(this.mt.moveAll(), this.mt) &&
+  			t.checkExpect(this.mt.removeOffscreen(), this.mt) &&
+  			t.checkExpect(this.list1.moveAll(), new ConsLoGamePiece(this.ship1.move(), this.mt)) &&
+  			t.checkExpect(this.list2.moveAll(), new ConsLoGamePiece(this.bullet1.move(), new ConsLoGamePiece(this.ship1.move(),this.mt))) &&
+  			t.checkExpect(this.list3.moveAll(), 
+  					new ConsLoGamePiece(this.ship2.move(), new ConsLoGamePiece(this.bullet1.move(), new ConsLoGamePiece(this.ship1.move(),this.mt)))) &&
+  			t.checkExpect(this.list4.moveAll(), new ConsLoGamePiece(this.bullet2.move(),
+  					new ConsLoGamePiece(this.ship2.move(), new ConsLoGamePiece(this.bullet1.move(), new ConsLoGamePiece(this.ship1.move(),this.mt))))) &&
+  			t.checkExpect(new ConsLoGamePiece(new Ship(new MyPosn(30, -1), new MyPosn(0,0)), this.mt), this.mt) &&
+  			t.checkExpect(this.list4.removeOffscreen(), this.list4);				
+  }
+  
+  /*
   boolean testWorld(Tester t) {
     GameWorld w = new GameWorld(5);
     int worldWidth = 500;
@@ -36,5 +60,10 @@ public class ExamplesGamePiece {
     double tickRate = .0357;
     return w.bigBang(worldWidth, worldHeight, tickRate);
   }
-
+ */ 
 }
+  
+  
+  
+ 
+
