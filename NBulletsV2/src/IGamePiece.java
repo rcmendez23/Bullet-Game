@@ -34,6 +34,25 @@ public interface IGamePiece {
   WorldScene place(WorldScene scene);
 
   WorldImage draw();
+
+  // Returns true if this IGamePiece is the same as that IGamePiece
+  boolean sameIGamePiece(IGamePiece other);
+
+  // Returns true if this bullet is the same as that bullet
+  boolean sameBullet(Bullet other);
+
+  // Returns true if this Ship is the same as that Ship
+  boolean sameShip(Ship other);
+
+  // Returns true if this Ship is in the given ILoGamePiece
+  boolean containsShip(ILoGamePiece other);
+
+  // Returns true if this Bullet is in the given ILoGamePiece
+  boolean containsBullet(ILoGamePiece other);
+
+  // Returns true if it is not a bullet
+  boolean isNotBullet();
+
 }
 
 class Ship implements IGamePiece {
@@ -41,30 +60,8 @@ class Ship implements IGamePiece {
   MyPosn velocity;
 
   Ship(MyPosn position, MyPosn velocity) {
-    this.position = position;
     this.velocity = velocity;
-  }
-  
-  Ship(MyPosn velocity) {
-    // set x position based on given random velocity
-    if(velocity.x < 0) {
-      this.position.x = 500;
-    }
-    else {
-      this.position.x = 0;
-    }
-    
-    // Set random y position
-    int randY = (int)(300*Math.random());
-    if(randY > 260) {
-      this.position.y = 260;
-    }
-    else if(randY < 40) {
-      this.position.y = 40;
-    }
-    else {
-      this.position.y = randY;
-    }
+    this.position = position;
   }
 
   // Moves this Ship to the desired position
@@ -81,13 +78,6 @@ class Ship implements IGamePiece {
   public boolean areColliding(IGamePiece other) {
     return other.areCollidingShip(this);
   }
-
-  /*
-  // Returns false because we don't care what this ship is colliding with
-  public boolean areColliding1(IGamePiece other) {
-    return false;
-  }
-  */
 
   // Returns false because Ships can't collide with Ships
   public boolean areCollidingShip(Ship other) {
@@ -118,10 +108,36 @@ class Ship implements IGamePiece {
   public WorldImage draw() {
     return new CircleImage(10, OutlineMode.SOLID, Color.CYAN);
   }
-  
+
   // place this ship on the given world scene
   public WorldScene place(WorldScene scene) {
     return scene.placeImageXY(this.draw(), this.position.x, this.position.y);
+  }
+
+  public boolean sameIGamePiece(IGamePiece other) {
+    return other.sameShip(this);
+  }
+
+  public boolean sameBullet(Bullet other) {
+    return false;
+  }
+
+  public boolean sameShip(Ship other) {
+    return this.position.x == other.position.x && this.position.y == other.position.y
+        && this.velocity.x == other.velocity.x && this.velocity.y == other.velocity.y;
+  }
+
+  public boolean containsShip(ILoGamePiece other) {
+    return other.containsIGamePiece(this);
+  }
+
+  public boolean containsBullet(ILoGamePiece other) {
+    return false;
+  }
+
+// returns true because not a bullet
+  public boolean isNotBullet() {
+    return true;
   }
 
 }
@@ -152,7 +168,7 @@ class Bullet implements IGamePiece {
 
   // Returns true if this Bullet collides with an IGamePiece
   public boolean areColliding(IGamePiece other) {
-    return other.areColliding(this);
+    return other.areCollidingBullet(this);
   }
 
   // Returns true if this Bullet collides with a Ship
@@ -188,6 +204,53 @@ class Bullet implements IGamePiece {
   // Place the bullet on the given world scene
   public WorldScene place(WorldScene scene) {
     return scene.placeImageXY(this.draw(), this.position.x, this.position.y);
+  }
+
+  public boolean sameIGamePiece(IGamePiece other) {
+    return other.sameBullet(this);
+  }
+
+  public boolean sameBullet(Bullet other) {
+    return this.position.x == other.position.x && this.position.y == other.position.y
+        && this.velocity.x == other.velocity.x && this.velocity.y == other.velocity.y
+        && this.generation == other.generation && this.size == other.size;
+  }
+
+  public boolean sameShip(Ship other) {
+    return false;
+  }
+
+  public boolean containsShip(ILoGamePiece other) {
+    return false;
+  }
+
+  public boolean containsBullet(ILoGamePiece other) {
+    return other.containsIGamePiece(this);
+  }
+
+  Bullet incrementSize() {
+    if (this.size >= 10) {
+      return new Bullet(this.position, this.velocity, this.size, this.generation);
+    }
+    else {
+      return new Bullet(this.position, this.velocity, this.size * 2, this.generation);
+    }
+  }
+
+  Bullet setVelocity(double angle) {
+    angle = Math.toRadians(angle);
+    // System.out.println("8.0*Math.cos(angle) : " +
+    // Double.toString(8.0*Math.cos(angle)));
+    // System.out.println("-8.0*Math.sin(angle) : " +
+    // Double.toString(-8.0*Math.sin(angle)));
+
+    return new Bullet(this.position, new MyPosn((int) Math.round(8.0 * Math.cos(angle)),
+        (int) Math.round(-8.0 * Math.sin(angle))), this.size, this.generation);
+  }
+
+  // Returns false because it is a bullet
+  public boolean isNotBullet() {
+    return false;
   }
 
 }

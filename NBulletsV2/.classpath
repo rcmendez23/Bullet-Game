@@ -4,7 +4,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/rebec/Downloads/tester.jar"/>
 	<classpathentry kind="lib" path="C:/Users/rebec/Downloads/javalib.jar"/>
-	<classpathentry kind="lib" path="C:/Users/agj71/Documents/Fundies 2/EclipseJars/javalib.jar"/>
-	<classpathentry kind="lib" path="C:/Users/agj71/Documents/Fundies 2/EclipseJars/tester.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
